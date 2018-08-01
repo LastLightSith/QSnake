@@ -125,11 +125,23 @@ void Snake::Crawl()
 			des.setX(p.x());
 			screencross = true;
 		}
+
+		if(!(p.x() > -1))
+		{
+			des.setX(ParentSize.width());
+			des.setY(p.y());
+			screencross = true;
+		}
+		if(!(p.y() > -1))
+		{
+			des.setY(ParentSize.height());
+			des.setX(p.x());
+			screencross = true;
+		}
 	}
 	else
 	{
 		if(p.x() >  parentWidget()->geometry().width())
-
 		{
 			des.setX(0);
 			des.setY(p.y());
@@ -141,6 +153,20 @@ void Snake::Crawl()
 			des.setX(p.x());
 			screencross = true;
 		}
+
+		if(!(p.x() > -1))
+		{
+			des.setX(parentWidget()->width());
+			des.setY(p.y());
+			screencross = true;
+		}
+		if(!(p.y() > -1))
+		{
+			des.setY(parentWidget()->height());
+			des.setX(p.x());
+			screencross = true;
+		}
+
 	}
 	if(!screencross)
 		switch (d)
