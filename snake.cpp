@@ -11,22 +11,24 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QPoint>
-
 #include <iostream>
+#include "mainwindow.h"
 
 
 QSize *Snake::BlockSize;
 
-Snake::Snake(QWidget *parent):
-	QWidget(parent),
+Snake::Snake(QWidget *Parent,QSize ParentSize):
+	QWidget(Parent),
 	timer(new QTimer(this))
 {
-	this->BlockSize = new QSize(15,15);
-	push(new Block(parent));
-	push(new Block(parent));
-	push(new Block(parent));
-	push(new Block(parent));
-	push(new Block(parent));
+	BlockSize = new QSize(15,15);
+	this->ParentSize = ParentSize;
+
+	push(new Block(this));
+	push(new Block(this));
+	push(new Block(this));
+	push(new Block(this));
+	push(new Block(this));
 
 	connect(timer,SIGNAL(timeout()),SLOT(Crawl()));
 	timer->start(50);
@@ -41,7 +43,7 @@ void Snake::push(Block *b )
 	QPoint p;
 	if(!blocks.size())
 	{
-		b->move(300,300);
+		b->move(00,00);
 		blocks.push_back(b);
 		return;
 	}
@@ -105,25 +107,62 @@ void Snake::Crawl()
 {
 	QPoint p = blocks.at(0)->pos();
 	QPoint des;
-	switch (d)
+
+	bool screencross = false;
+
+	bool Maximizd = parentWidget()->windowState().testFlag(Qt::WindowMaximized);
+	if(Maximizd)
 	{
-		case LEFT:
-			des.setX(p.x()-BlockSize->width()-1);
+		if(p.x() > ParentSize.width())
+		{
+			des.setX(0);
 			des.setY(p.y());
-			break;
-		case RIGHT:
-			des.setX(p.x()+BlockSize->width()+1);
-			des.setY(p.y());
-			break;
-		case DOWN:
-			des.setY(p.y()+BlockSize->width()+1);
+			screencross = true;
+		}
+		if(p.y() > ParentSize.height())
+		{
+			des.setY(0);
 			des.setX(p.x());
-			break;
-		case UP:
-			des.setY(p.y()-BlockSize->width()-1);
-			des.setX(p.x());
-			break;
+			screencross = true;
+		}
 	}
+	else
+	{
+		if(p.x() >  parentWidget()->geometry().width())
+
+		{
+			des.setX(0);
+			des.setY(p.y());
+			screencross = true;
+		}
+		if(p.y() > parentWidget()->geometry().height())
+		{
+			des.setY(0);
+			des.setX(p.x());
+			screencross = true;
+		}
+	}
+	if(!screencross)
+		switch (d)
+		{
+			case LEFT:
+				des.setX(p.x()-BlockSize->width()-1);
+				des.setY(p.y());
+				break;
+			case RIGHT:
+				des.setX(p.x()+BlockSize->width()+1);
+				des.setY(p.y());
+				break;
+			case DOWN:
+				des.setY(p.y()+BlockSize->width()+1);
+				des.setX(p.x());
+				break;
+			case UP:
+				des.setY(p.y()-BlockSize->width()-1);
+				des.setX(p.x());
+				break;
+		}
+
 	blocks[0]->move(des);
 
 	for(uint i=1;i<blocks.size();i++)

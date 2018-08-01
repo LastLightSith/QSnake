@@ -7,18 +7,27 @@
  */
 
 #include "mainwindow.h"
+#include <QScreen>
+#include <QGuiApplication>
 
 MainWindow::MainWindow():
 	QMainWindow (nullptr)
 {
 	QString style =
 		"QMainWindow{ "
-		"background-image:url(\":/img/bg.png\");"
-		" background-position: center;"
+		"background:url(\":/img/bg.png\");"
 		"} ";
 
-	setStyleSheet(style);
-	snake = new Snake(this);
-	setCentralWidget(snake);
+	QScreen *screen = QGuiApplication::primaryScreen();
+	QRect  rect = screen->geometry();
+	WinSize.setHeight(rect.height());
+	WinSize.setWidth(rect.width());
 
+	setMaximumSize(WinSize);
+	setMinimumSize(WinSize.width()*0.7,WinSize.height()*0.7);
+
+	setStyleSheet(style);
+	snake = new Snake(this,WinSize);
+	setCentralWidget(snake);
 }
+

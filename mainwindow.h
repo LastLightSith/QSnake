@@ -16,6 +16,9 @@ class MainWindow : public QMainWindow
 {
 public:
 	MainWindow();
+	QSize WinSize;
+
+
 private:
 	Snake* snake;
 

@@ -18,7 +18,7 @@ class Snake:public QWidget
 {
 	Q_OBJECT
 public:
-		Snake(QWidget *parent);
+		Snake(QWidget *parent,QSize ParentSize);
 		static QSize *BlockSize;
 private:
 		class Block;
@@ -29,6 +29,7 @@ private:
 		Direction d = RIGHT;
 		QTimer *timer;
 		std::vector<Block*> blocks;
+		QSize ParentSize;
 
 		void push(Block *b);
 
