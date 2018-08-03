@@ -11,9 +11,11 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QPoint>
-#include <iostream>
 #include "mainwindow.h"
-
+#include <QGridLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QApplication>
 
 QSize *Snake::BlockSize;
 
@@ -31,28 +33,29 @@ Snake::Snake(QWidget *Parent,QSize ParentSize):
 	push(new Block(this));
 
 	connect(timer,SIGNAL(timeout()),SLOT(Crawl()));
-	timer->start(50);
+	timer->start(60);
 
 	setFocus();
 	grabKeyboard();
 
 }
 
-void Snake::push(Block *b )
+void Snake::push(Block *b , Direction pd)
 {
 	QPoint p;
 	if(!blocks.size())
 	{
-		b->move(00,00);
+		b->move(30,30);
 		blocks.push_back(b);
 		return;
 	}
 	else
 		p = blocks[blocks.size()-1]->pos();
 	QPoint des;
-	switch (b->BlockDirection)
+	switch (pd)
 	{
 		case LEFT:
+
 			des.setX(p.x()-BlockSize->width()-1);
 			des.setY(p.y());
 			break;
@@ -80,33 +83,38 @@ void Snake::keyPressEvent(QKeyEvent *e)
 	{
 		case Qt::Key_W:
 		case Qt::Key_Up:
-			d = UP;
+			if(d!=DOWN)
+				d = UP;
 			break;
 
 		case Qt::Key_A:
 		case Qt::Key_Left:
-			d = LEFT;
+			if(d!=RIGHT)
+				d = LEFT;
 			break;
 
 		case Qt::Key_Down:
 		case Qt::Key_S:
-			d = DOWN;
+			if(d!=UP)
+				d = DOWN;
 			break;
 
 		case Qt::Key_D:
 		case Qt::Key_Right:
-			d = RIGHT;
+			if(d!=LEFT)
+				d = RIGHT;
 			break;
 	}
 
-	std::cout << e->text().toStdString() << " has been pressed\n";
 }
 
 
 void Snake::Crawl()
 {
+
 	QPoint p = blocks.at(0)->pos();
 	QPoint des;
+
 
 	bool screencross = false;
 
@@ -197,13 +205,82 @@ void Snake::Crawl()
 		blocks[i]->move(p);
 		p=des;
 	}
-	std::cout << "Crawl funtion has been called\n";
+
+//	std::cout << "Snake x:" << blocks[0]->pos().x() << "Snake y:" << blocks[0]->pos().y() <<'\n';
+//	std::cout << "Fruit x:" << fruit->pos().x() << "Fruit y:" << fruit->pos().y() <<'\n';
+
+	if(
+	   (blocks[0]->pos().x() <= fruit->pos().x()+10 && blocks[0]->pos().x() >= fruit->pos().x()-10) &&
+	   (blocks[0]->pos().y() <= fruit->pos().y()+10 && blocks[0]->pos().y() >= fruit->pos().y()-10)
+	  )
+	{
+		fruit->Eaten();
+		Block *New;
+		for(int i = 0;i<8;i++)
+		{
+			New = new Block(this);
+			New->move(blocks[blocks.size()-1]->pos());
+			blocks.push_back(New);
+		}
+	}
+
+	CheckHead();
 }
 
+void Snake::setFruit(Fruit *fruit)
+{
+	this->fruit = fruit;
+}
 
+void Snake::CheckHead()
+{
+	bool hited  = false;
+	for(uint i=3;i<blocks.size();i++)
+	{
+		if(blocks[i]->pos() == blocks[0]->pos())
+			hited = true;
+	}
 
+	if(hited)
+	{
 
+		timer->stop();
 
+		QWidget *hit  = new QWidget();
+		QGridLayout *grid = new QGridLayout();
+		hit->setLayout(grid);
+		QLabel *label = new QLabel("Opps ! You hit youself !!");
+		QPushButton *Retry = new QPushButton("Retry");
+		QPushButton *Quit  = new QPushButton("Exit");
+
+		grid->addWidget(label,0,0,1,2);
+		grid->addWidget(Retry,1,0);
+		grid->addWidget(Quit,1,1);
+
+		connect(Quit,SIGNAL(clicked()),QApplication::instance(),SLOT(quit()));
+		connect(Retry,SIGNAL(clicked()),this,SLOT(Restart()));
+
+		hit->show();
+
+	}
+}
+
+void Snake::Restart()
+{
+	QWidget *sender  =  qobject_cast<QWidget*>(QWidget::sender());
+
+	for(auto block : blocks)
+		delete block;
+
+	blocks.clear();
+
+	push(new Block(this));
+	push(new Block(this));
+	push(new Block(this));
+
+	delete sender->parentWidget();
+	timer->start(60);
+}
 
 
 

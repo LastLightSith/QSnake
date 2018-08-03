@@ -13,6 +13,6 @@ set(CMAKE_AUTORCC ON)
 
 add_executable(QSnake
     main.cpp mainwindow.cpp snake.cpp res.qrc
-    block.cpp
+    block.cpp fruit.cpp
 )
 target_link_libraries(QSnake Qt5::Widgets Qt5::Core)

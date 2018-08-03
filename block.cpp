@@ -8,10 +8,9 @@
 #include "block.h"
 #include <QFrame>
 
-Snake::Block::Block(QWidget *p,Direction direction):
+Snake::Block::Block(QWidget *p):
 	QFrame(p)
 {
-	BlockDirection  = direction;
 	setFixedSize(*BlockSize);
 	setStyleSheet
 	(

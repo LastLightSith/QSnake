@@ -11,6 +11,7 @@
 
 #include <QMainWindow>
 #include "snake.h"
+#include "fruit.h"
 
 class MainWindow : public QMainWindow
 {
@@ -21,6 +22,8 @@ public:
 
 private:
 	Snake* snake;
+	Fruit *fruit;
+
 
 };
 

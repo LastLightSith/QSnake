@@ -15,8 +15,7 @@ class Snake::Block : public QFrame
 {
 	Q_OBJECT
 public:
-        Block(QWidget*p,Direction direction = LEFT);
-		Direction BlockDirection;
+		Block(QWidget*p);
 private:
 };
 

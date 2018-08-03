@@ -14,9 +14,13 @@
 #include <QWidget>
 #include <QSize>
 
+class Fruit;
+
 class Snake:public QWidget
 {
 	Q_OBJECT
+
+
 public:
 		Snake(QWidget *parent,QSize ParentSize);
 		static QSize *BlockSize;
@@ -28,16 +32,24 @@ private:
 
 		Direction d = RIGHT;
 		QTimer *timer;
-		std::vector<Block*> blocks;
 		QSize ParentSize;
+		Fruit *fruit;
 
-		void push(Block *b);
+		void push(Block *b ,Direction pd=LEFT);
+		void CheckHead();
 
 protected:
 		void keyPressEvent(QKeyEvent *event);
 
 private slots:
 		void Crawl();
+		void Restart();
+public:
+		std::vector<Block*> blocks;
+		void setFruit(Fruit *fruit);
+
+signals:
+		void Eaten();
 };
 
 #endif // SNAKE_H

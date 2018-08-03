@@ -9,6 +9,7 @@
 #include "mainwindow.h"
 #include <QScreen>
 #include <QGuiApplication>
+#include <QFrame>
 
 MainWindow::MainWindow():
 	QMainWindow (nullptr)
@@ -23,11 +24,15 @@ MainWindow::MainWindow():
 	WinSize.setHeight(rect.height());
 	WinSize.setWidth(rect.width());
 
+	setWindowIcon(QIcon(":/img/icon.png"));
+
 	setMaximumSize(WinSize);
 	setMinimumSize(WinSize.width()*0.7,WinSize.height()*0.7);
 
 	setStyleSheet(style);
 	snake = new Snake(this,WinSize);
+	fruit =  new Fruit(this,WinSize,snake);
+	snake->setFruit(fruit);
 	setCentralWidget(snake);
 }
 
