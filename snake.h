@@ -36,7 +36,7 @@ private:
 		QTimer *timer;
 		QSize ParentSize;
 		Fruit *fruit;
-		const int speed = 50;
+		const int speed = 40;
 		std::queue<Direction> Pending;
 
 
