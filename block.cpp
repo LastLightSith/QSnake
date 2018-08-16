@@ -16,7 +16,7 @@ Snake::Block::Block(QWidget *p):
 	(
 		"QFrame{"
 		"background-color: yellow;"
-		"border-radius: 5%;"
+		"border-radius: 7%;"
 		"border: 3px solid green;"
 		"}"
 	);

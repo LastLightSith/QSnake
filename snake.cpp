@@ -17,8 +17,6 @@
 #include <QPushButton>
 #include <QApplication>
 
-#include <iostream>
-#include <unistd.h>
 
 QSize *Snake::BlockSize;
 
@@ -26,8 +24,10 @@ Snake::Snake(QWidget *Parent,QSize ParentSize):
 	QWidget(Parent),
 	timer(new QTimer(this))
 {
-	BlockSize = new QSize(15,15);
+	BlockSize = new QSize(20,20);
 	this->ParentSize = ParentSize;
+
+	Pending.push(d);
 
 	push(new Block(this));
 	push(new Block(this));
@@ -53,7 +53,7 @@ void Snake::push(Block *b , Direction pd)
 		return;
 	}
 	else
-		p = blocks[blocks.size()-1]->pos();
+		p = blocks.front()->pos();
 	QPoint des;
 	switch (pd)
 	{
@@ -86,28 +86,31 @@ void Snake::keyPressEvent(QKeyEvent *e)
 	{
 		case Qt::Key_W:
 		case Qt::Key_Up:
-			if(d!=DOWN)
+			if(d!=DOWN && Pending.front() != DOWN)
 				d = UP;
 			break;
 
 		case Qt::Key_A:
 		case Qt::Key_Left:
-			if(d!=RIGHT)
+			if(d!=RIGHT && Pending.front() != RIGHT)
 				d = LEFT;
 			break;
 
 		case Qt::Key_Down:
 		case Qt::Key_S:
-			if(d!=UP)
+			if(d!=UP && Pending.front() != UP)
 				d = DOWN;
 			break;
 
 		case Qt::Key_D:
 		case Qt::Key_Right:
-			if(d!=LEFT)
+			if(d!=LEFT && Pending.front() != LEFT)
 				d = RIGHT;
 			break;
 	}
+
+	if(Pending.front() != d)
+		Pending.push(d);
 
 }
 
@@ -115,7 +118,7 @@ void Snake::keyPressEvent(QKeyEvent *e)
 void Snake::Crawl()
 {
 
-	QPoint p = blocks.at(0)->pos();
+	QPoint p = blocks.front()->pos();
 	QPoint des;
 
 
@@ -152,7 +155,7 @@ void Snake::Crawl()
 	}
 	else
 	{
-		if(p.x() >  parentWidget()->geometry().width())
+		if(p.x() >  parentWidget()->geometry().width() )
 		{
 			des.setX(0);
 			des.setY(p.y());
@@ -178,9 +181,10 @@ void Snake::Crawl()
 			screencross = true;
 		}
 
-	}
+	}	
+
 	if(!screencross)
-		switch (d)
+		switch (Pending.front())
 		{
 			case LEFT:
 				des.setX(p.x()-BlockSize->width()-1);
@@ -200,14 +204,19 @@ void Snake::Crawl()
 				break;
 		}
 
-	Block *temp = blocks[blocks.size()-1];
+
+	if(Pending.size() > 1)
+		Pending.pop();
+
+
+	Block *temp = blocks.back();
 	temp->move(des);
 	blocks.pop_back();
 	blocks.insert(blocks.begin(),temp);
 
 	if(
-	   (blocks[0]->pos().x() <= fruit->pos().x()+10 && blocks[0]->pos().x() >= fruit->pos().x()-10) &&
-	   (blocks[0]->pos().y() <= fruit->pos().y()+10 && blocks[0]->pos().y() >= fruit->pos().y()-10)
+	   (blocks.front()->pos().x() <= fruit->pos().x()+20 && blocks.front()->pos().x() >= fruit->pos().x()-20) &&
+	   (blocks.front()->pos().y() <= fruit->pos().y()+20 && blocks.front()->pos().y() >= fruit->pos().y()-20)
 	  )
 	{
 		fruit->Eaten();
@@ -215,10 +224,11 @@ void Snake::Crawl()
 		for(int i = 0;i<8;i++)
 		{
 			New = new Block(this);
-			New->move(blocks[blocks.size()-1]->pos());
+			New->move(blocks.back()->pos());
 			blocks.push_back(New);
 		}
 	}
+
 
 	CheckHead();
 }
@@ -231,11 +241,11 @@ void Snake::setFruit(Fruit *fruit)
 void Snake::CheckHead()
 {
 	bool hited  = false;
-	for(uint i=2;i<blocks.size();i++)
+	std::for_each(++blocks.begin(),blocks.end(), [&](Block *i)
 	{
-		if(blocks[i]->pos() == blocks[0]->pos())
+		if(blocks.front()->pos() == i->pos())
 			hited = true;
-	}
+	});
 
 	if(hited)
 	{
@@ -256,8 +266,11 @@ void Snake::CheckHead()
 		connect(Quit,SIGNAL(clicked()),QApplication::instance(),SLOT(quit()));
 		connect(Retry,SIGNAL(clicked()),this,SLOT(Restart()));
 
+		hit->setParent(this);
+		hit->move(size().width()/2 - hit->size().width()/8 ,10);
+		hit->setAutoFillBackground(true);
+		hit->setWindowFlags(Qt::Widget);
 		hit->show();
-
 	}
 }
 
@@ -267,6 +280,11 @@ void Snake::Restart()
 
 	for(auto block : blocks)
 		delete block;
+	while(!Pending.empty())
+		Pending.pop();
+
+	d = RIGHT;
+	Pending.push(d);
 
 	blocks.clear();
 
@@ -274,7 +292,6 @@ void Snake::Restart()
 	push(new Block(this));
 	push(new Block(this));
 
-	d = RIGHT;
 
 	delete sender->parentWidget();
 	timer->start(speed);

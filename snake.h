@@ -10,9 +10,11 @@
 #define SNAKE_H
 
 #include <QTimer>
-#include <vector>
 #include <QWidget>
 #include <QSize>
+
+#include <list>
+#include <queue>
 
 class Fruit;
 
@@ -34,10 +36,12 @@ private:
 		QTimer *timer;
 		QSize ParentSize;
 		Fruit *fruit;
+		const int speed = 50;
+		std::queue<Direction> Pending;
+
 
 		void push(Block *b ,Direction pd=LEFT);
 		void CheckHead();
-		const int speed = 60;
 
 protected:
 		void keyPressEvent(QKeyEvent *event);
@@ -46,7 +50,7 @@ private slots:
 		void Crawl();
 		void Restart();
 public:
-		std::vector<Block*> blocks;
+		std::list<Block*> blocks;
 		void setFruit(Fruit *fruit);
 
 signals:

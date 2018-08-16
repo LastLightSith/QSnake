@@ -9,8 +9,8 @@
 #include <block.h>
 #include "snake.h"
 #include <cstdio>
+#include <ctime>
 
-#include <iostream>
 
 Fruit::Fruit(QWidget *parent,QSize ParentSize,Snake *snake):
 	QFrame(parent)
@@ -24,7 +24,7 @@ Fruit::Fruit(QWidget *parent,QSize ParentSize,Snake *snake):
 			"	border-image:url(\":/img/apple.png\");"
 			"};";
 	setStyleSheet(style);
-	setFixedSize(15,15);
+	setFixedSize(20,20);
 	move(100,200);
 
 }
@@ -38,20 +38,20 @@ void Fruit::Eaten()
 
 	if(Maximized)
 	{
-		point.rx() = RandXY(0,ParentSize.width());
-		point.ry() = RandXY(0,ParentSize.height());
+		point.rx() = RandXY(30,ParentSize.width()-30);
+		point.ry() = RandXY(30,ParentSize.height())-30;
 	}
 	else
 	{
-		point.rx() = RandXY(0,parentWidget()->geometry().width());
-		point.ry() = RandXY(0,parentWidget()->geometry().height());
+		point.rx() = RandXY(30,parentWidget()->geometry().width());
+		point.ry() = RandXY(30,parentWidget()->geometry().height());
 	}
 
 	for(auto block :snake->blocks)
 	{
 		if(
-		   (point.x() <= block->pos().x()+10 && point.x() >= block->pos().x()-10) &&
-		   (point.y() <= block->pos().y()+10 && point.y() >= block->pos().y()-10)
+		   (point.x() <= block->pos().x()+30 && point.x() >= block->pos().x()-30) &&
+		   (point.y() <= block->pos().y()+30 && point.y() >= block->pos().y()-30)
 		  )
 			goto sos;
 	}
@@ -61,6 +61,7 @@ void Fruit::Eaten()
 
 int Fruit::RandXY(int min,int max)
 {
+	srand(time(nullptr));
 	return min + (rand() % (max - min +1 ) );
 }
 
