@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.4)
 project(QSnake)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD 17)
+set(CXX_EXTENSIONS ON)
 
 find_package(Qt5 COMPONENTS Widgets Core)
 

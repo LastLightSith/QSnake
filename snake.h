@@ -44,6 +44,7 @@ protected:
 private slots:
 		void Crawl();
 		void Restart();
+		const int speed = 60;
 public:
 		std::vector<Block*> blocks;
 		void setFruit(Fruit *fruit);

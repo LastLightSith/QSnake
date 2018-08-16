@@ -9,9 +9,7 @@
 #define FRUIT_H
 
 #include <QFrame>
-
 #include <QSize>
-#include <QRandomGenerator>
 
 class Snake;
 
@@ -24,7 +22,8 @@ public:
 private:
 	QSize ParentSize;
 	Snake *snake;
-	QRandomGenerator random;
+	int RandXY(int min,int max);
+
 };
 
 #endif // FRUIT_H

@@ -8,6 +8,7 @@
 #include "fruit.h"
 #include <block.h>
 #include "snake.h"
+#include <cstdio>
 
 #include <iostream>
 
@@ -16,6 +17,7 @@ Fruit::Fruit(QWidget *parent,QSize ParentSize,Snake *snake):
 {
 	this->snake  = snake;
 	this->ParentSize = ParentSize;
+
 
 	QString style =
 			"QFrame{"
@@ -36,13 +38,13 @@ void Fruit::Eaten()
 
 	if(Maximized)
 	{
-		point.rx() = random.bounded(0,ParentSize.width());
-		point.ry() = random.bounded(0,ParentSize.height());
+		point.rx() = RandXY(0,ParentSize.width());
+		point.ry() = RandXY(0,ParentSize.height());
 	}
 	else
 	{
-		point.rx() = random.bounded(0,parentWidget()->geometry().width());
-		point.ry() = random.bounded(0,parentWidget()->geometry().height());
+		point.rx() = RandXY(0,parentWidget()->geometry().width());
+		point.ry() = RandXY(0,parentWidget()->geometry().height());
 	}
 
 	for(auto block :snake->blocks)
@@ -56,3 +58,23 @@ void Fruit::Eaten()
 
 	move(point);
 }
+
+int Fruit::RandXY(int min,int max)
+{
+	return min + (rand() % (max - min +1 ) );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

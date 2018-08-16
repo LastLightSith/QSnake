@@ -17,6 +17,9 @@
 #include <QPushButton>
 #include <QApplication>
 
+#include <iostream>
+#include <unistd.h>
+
 QSize *Snake::BlockSize;
 
 Snake::Snake(QWidget *Parent,QSize ParentSize):
@@ -33,7 +36,7 @@ Snake::Snake(QWidget *Parent,QSize ParentSize):
 	push(new Block(this));
 
 	connect(timer,SIGNAL(timeout()),SLOT(Crawl()));
-	timer->start(60);
+	timer->start(speed);
 
 	setFocus();
 	grabKeyboard();
@@ -45,7 +48,7 @@ void Snake::push(Block *b , Direction pd)
 	QPoint p;
 	if(!blocks.size())
 	{
-		b->move(30,30);
+		b->move(130,130);
 		blocks.push_back(b);
 		return;
 	}
@@ -197,17 +200,10 @@ void Snake::Crawl()
 				break;
 		}
 
-	blocks[0]->move(des);
-
-	for(uint i=1;i<blocks.size();i++)
-	{
-		des = blocks[i]->pos();
-		blocks[i]->move(p);
-		p=des;
-	}
-
-//	std::cout << "Snake x:" << blocks[0]->pos().x() << "Snake y:" << blocks[0]->pos().y() <<'\n';
-//	std::cout << "Fruit x:" << fruit->pos().x() << "Fruit y:" << fruit->pos().y() <<'\n';
+	Block *temp = blocks[blocks.size()-1];
+	temp->move(des);
+	blocks.pop_back();
+	blocks.insert(blocks.begin(),temp);
 
 	if(
 	   (blocks[0]->pos().x() <= fruit->pos().x()+10 && blocks[0]->pos().x() >= fruit->pos().x()-10) &&
@@ -235,7 +231,7 @@ void Snake::setFruit(Fruit *fruit)
 void Snake::CheckHead()
 {
 	bool hited  = false;
-	for(uint i=3;i<blocks.size();i++)
+	for(uint i=2;i<blocks.size();i++)
 	{
 		if(blocks[i]->pos() == blocks[0]->pos())
 			hited = true;
@@ -278,48 +274,8 @@ void Snake::Restart()
 	push(new Block(this));
 	push(new Block(this));
 
+	d = RIGHT;
+
 	delete sender->parentWidget();
-	timer->start(60);
+	timer->start(speed);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -15,7 +15,7 @@ Snake::Block::Block(QWidget *p):
 	setStyleSheet
 	(
 		"QFrame{"
-		"background-color: aqua;"
+		"background-color: yellow;"
 		"border-radius: 5%;"
 		"border: 3px solid green;"
 		"}"
