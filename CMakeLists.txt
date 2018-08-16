@@ -5,6 +5,7 @@ project(QSnake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CXX_EXTENSIONS ON)
+set(CMAKE_CXX_FLAGS " -no-pie ")
 
 find_package(Qt5 COMPONENTS Widgets Core)
 

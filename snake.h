@@ -37,6 +37,7 @@ private:
 
 		void push(Block *b ,Direction pd=LEFT);
 		void CheckHead();
+		const int speed = 60;
 
 protected:
 		void keyPressEvent(QKeyEvent *event);
@@ -44,7 +45,6 @@ protected:
 private slots:
 		void Crawl();
 		void Restart();
-		const int speed = 60;
 public:
 		std::vector<Block*> blocks;
 		void setFruit(Fruit *fruit);
