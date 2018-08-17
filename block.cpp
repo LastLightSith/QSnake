@@ -12,7 +12,7 @@ Snake::Block::Block(QWidget *p):
 	QFrame(p)
 {
 	setFixedSize(*BlockSize);
-	setStyleSheet
+	style = new  QString
 	(
 		"QFrame{"
 		"background-color: yellow;"
@@ -20,5 +20,12 @@ Snake::Block::Block(QWidget *p):
 		"border: 3px solid green;"
 		"}"
 	);
+
+	setStyleSheet(*style);
 	show();
+}
+
+void Snake::Block::ResetStyle()
+{
+	setStyleSheet(*style);
 }

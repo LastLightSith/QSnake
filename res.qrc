@@ -3,5 +3,7 @@
         <file>img/bg.png</file>
         <file>img/apple.png</file>
         <file>img/icon.png</file>
+        <file>img/cry.png</file>
+        <file>img/Head.png</file>
     </qresource>
 </RCC>

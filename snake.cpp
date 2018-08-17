@@ -24,8 +24,24 @@ Snake::Snake(QWidget *Parent,QSize ParentSize):
 	QWidget(Parent),
 	timer(new QTimer(this))
 {
-	BlockSize = new QSize(20,20);
+	BlockSize = new QSize(25,25);
 	this->ParentSize = ParentSize;
+
+	HeadStyle = new QString(
+							"QFrame{"
+							"border-image: url(\":/img/Head.png\");"
+							"background-color: yellow;"
+							"border-radius: 7%;"
+							"}; "
+						   );
+
+	HitStyle = new QString(
+							"QFrame{"
+							"border-image: url(\":/img/cry.png\");"
+							"min-height:30px;"
+							"min-width:30px;"
+							"}; "
+						   );
 
 	Pending.push(d);
 
@@ -106,6 +122,12 @@ void Snake::keyPressEvent(QKeyEvent *e)
 		case Qt::Key_Right:
 			if(d!=LEFT && Pending.front() != LEFT)
 				d = RIGHT;
+			break;
+		case Qt::Key_P:
+			timer->stop();
+			break;
+		case Qt::Key_R:
+			timer->start(speed);
 			break;
 	}
 
@@ -210,13 +232,16 @@ void Snake::Crawl()
 
 
 	Block *temp = blocks.back();
+	temp->setStyleSheet(*HeadStyle);
+	blocks.front()->ResetStyle();
 	temp->move(des);
 	blocks.pop_back();
 	blocks.insert(blocks.begin(),temp);
 
+
 	if(
-	   (blocks.front()->pos().x() <= fruit->pos().x()+20 && blocks.front()->pos().x() >= fruit->pos().x()-20) &&
-	   (blocks.front()->pos().y() <= fruit->pos().y()+20 && blocks.front()->pos().y() >= fruit->pos().y()-20)
+	   (blocks.front()->pos().x() <= fruit->pos().x()+BlockSize->width() && blocks.front()->pos().x() >= fruit->pos().x()-BlockSize->width()) &&
+	   (blocks.front()->pos().y() <= fruit->pos().y()+BlockSize->height() && blocks.front()->pos().y() >= fruit->pos().y()-BlockSize->height())
 	  )
 	{
 		fruit->Eaten();
@@ -228,6 +253,8 @@ void Snake::Crawl()
 			blocks.push_back(New);
 		}
 	}
+
+
 
 
 	CheckHead();
@@ -250,6 +277,8 @@ void Snake::CheckHead()
 	if(hited)
 	{
 
+		blocks.front()->setStyleSheet(*HitStyle);
+		blocks.front()->raise();
 		timer->stop();
 
 		QWidget *hit  = new QWidget();
@@ -267,7 +296,7 @@ void Snake::CheckHead()
 		connect(Retry,SIGNAL(clicked()),this,SLOT(Restart()));
 
 		hit->setParent(this);
-		hit->move(size().width()/2 - hit->size().width()/8 ,10);
+		hit->move(size().width()/2 - hit->size().width()/8 ,1);
 		hit->setAutoFillBackground(true);
 		hit->setWindowFlags(Qt::Widget);
 		hit->show();

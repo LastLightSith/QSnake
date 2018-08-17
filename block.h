@@ -16,7 +16,9 @@ class Snake::Block : public QFrame
 	Q_OBJECT
 public:
 		Block(QWidget*p);
+		void ResetStyle();
 private:
+		QString *style;
 };
 
 #endif // BLOCK_H

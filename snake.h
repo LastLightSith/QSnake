@@ -36,12 +36,15 @@ private:
 		QTimer *timer;
 		QSize ParentSize;
 		Fruit *fruit;
-		const int speed = 40;
+		const int speed = 50;
 		std::queue<Direction> Pending;
+		QString *HeadStyle;
+		QString *HitStyle;
 
 
 		void push(Block *b ,Direction pd=LEFT);
 		void CheckHead();
+		void Pause();
 
 protected:
 		void keyPressEvent(QKeyEvent *event);
@@ -52,8 +55,6 @@ private slots:
 public:
 		std::list<Block*> blocks;
 		void setFruit(Fruit *fruit);
-
-signals:
 		void Eaten();
 };
 
