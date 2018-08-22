@@ -323,23 +323,5 @@ void Snake::CheckHead()
 
 void Snake::Restart()
 {
-	QWidget *sender  =  qobject_cast<QWidget*>(QWidget::sender());
-
-	for(auto block : blocks)
-		delete block;
-	while(!Pending.empty())
-		Pending.pop();
-
-	d = RIGHT;
-	Pending.push(d);
-
-	blocks.clear();
-
-	push(new Block(this));
-	push(new Block(this));
-	push(new Block(this));
-
-
-	delete sender->parentWidget();
-	timer->start(speed);
+	qApp->exit(11117);
 }
