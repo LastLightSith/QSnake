@@ -38,20 +38,20 @@ void Fruit::Eaten()
 
 	if(Maximized)
 	{
-		point.rx() = RandXY(50,ParentSize.width()-50);
-		point.ry() = RandXY(50,ParentSize.height())-50;
+		point.rx() = RandXY(100,ParentSize.width()-100);
+		point.ry() = RandXY(100,ParentSize.height())-100;
 	}
 	else
 	{
-		point.rx() = RandXY(50,parentWidget()->geometry().width());
-		point.ry() = RandXY(50,parentWidget()->geometry().height());
+		point.rx() = RandXY(100,parentWidget()->geometry().width());
+		point.ry() = RandXY(100,parentWidget()->geometry().height());
 	}
 
 	for(auto block :snake->blocks)
 	{
 		if(
-		   (point.x() <= block->pos().x()+50 && point.x() >= block->pos().x()-50) &&
-		   (point.y() <= block->pos().y()+50 && point.y() >= block->pos().y()-50)
+		   (point.x() <= block->pos().x()+100 && point.x() >= block->pos().x()-100) &&
+		   (point.y() <= block->pos().y()+100 && point.y() >= block->pos().y()-100)
 		  )
 			goto sos;
 	}

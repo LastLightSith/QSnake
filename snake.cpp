@@ -143,7 +143,6 @@ void Snake::Crawl()
 	QPoint p = blocks.front()->pos();
 	QPoint des;
 
-
 	bool screencross = false;
 
 	bool Maximizd = parentWidget()->windowState().testFlag(Qt::WindowMaximized);
@@ -239,25 +238,44 @@ void Snake::Crawl()
 	blocks.insert(blocks.begin(),temp);
 
 
+	if(isFruitReady)
 	if(
 	   (blocks.front()->pos().x() <= fruit->pos().x()+BlockSize->width() && blocks.front()->pos().x() >= fruit->pos().x()-BlockSize->width()) &&
 	   (blocks.front()->pos().y() <= fruit->pos().y()+BlockSize->height() && blocks.front()->pos().y() >= fruit->pos().y()-BlockSize->height())
 	  )
 	{
-		fruit->Eaten();
+		ft = new std::thread([&](){
+			isFruitReady = false;
+			fruit->Eaten();
+			isFruitReady = true;
+		});
+		ft->detach();
+
 		Block *New;
-		for(int i = 0;i<8;i++)
+		for(int i = 0;i<28;i++)
 		{
 			New = new Block(this);
 			New->move(blocks.back()->pos());
-			blocks.push_back(New);
+			PendingBlocks.push(New);
 		}
 	}
 
 
+	if(!PendingBlocks.empty())
+	{
+		Block *tempB = PendingBlocks.front();
+		tempB->move(blocks.back()->pos());
+		blocks.push_back(tempB);
+		PendingBlocks.pop();
+	}
 
+	if(!isFruitReady)
+		fruit->hide();
+	else if(isFruitReady)
+		fruit->show();
 
 	CheckHead();
+
 }
 
 void Snake::setFruit(Fruit *fruit)

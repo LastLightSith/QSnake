@@ -15,6 +15,7 @@
 
 #include <list>
 #include <queue>
+#include <thread>
 
 class Fruit;
 
@@ -28,18 +29,19 @@ public:
 		static QSize *BlockSize;
 private:
 		class Block;
-		enum Direction
-		{UP=0,DOWN,LEFT,RIGHT};
-
+		enum Direction {UP=0,DOWN,LEFT,RIGHT};
 
 		Direction d = RIGHT;
-		QTimer *timer;
+		QTimer *timer =nullptr;
 		QSize ParentSize;
-		Fruit *fruit;
+		Fruit *fruit =nullptr;
 		const int speed = 50;
 		std::queue<Direction> Pending;
-		QString *HeadStyle;
-		QString *HitStyle;
+		std::queue<Block*> PendingBlocks;
+		QString *HeadStyle =nullptr;
+		QString *HitStyle =nullptr ;
+		std::thread *ft =nullptr;
+		bool isFruitReady = true;
 
 
 		void push(Block *b ,Direction pd=LEFT);
